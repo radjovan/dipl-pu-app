@@ -1,4 +1,4 @@
-import { NgModule, inject } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
@@ -20,17 +20,17 @@ import { VezbanjaComponent } from './components/vezbanja/vezbanja/vezbanja.compo
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent},
-  { path: 'home', component: HomeComponent, canActivate: [() => inject(AuthGuard).canActivate()]},
-  { path: 'profile', component: ProfileComponent },
-  { path: 'settings', component: SettingsComponent },
-  { path: 'registration', component: RegistrationComponent, canActivate: [() => inject(AuthGuard).canActivate()]},
-  { path: 'zaduzenja', component: ZaduzenjaComponent, canActivate: [() => inject(AuthGuard).canActivate()]},
-  { path: 'zadaci', component: ZadaciComponent, canActivate: [() => inject(ProfesorGuard).canActivate()]},
-  { path: 'vezbe', component: VezbeComponent, canActivate: [() => inject(ProfesorGuard).canActivate()]},
-  { path: 'moje-vezbe', component: MojeVezbeComponent, canActivate: [() => inject(ProfesorGuard).canActivate()]},
-  { path: 'moji-zadaci', component: MojiZadaciComponent, canActivate: [() => inject(ProfesorGuard).canActivate()]},
-  { path: 'vezbanja', component: VezbanjaComponent, canActivate: [() => inject(UcenikGuard).canActivate()]},
-  { path: 'vezbanje/:id', component: VezbanjeComponent, canActivate: [() => inject(UcenikGuard).canActivate()]},
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
+  { path: 'registration', component: RegistrationComponent, canActivate: [AuthGuard] },
+  { path: 'zaduzenja', component: ZaduzenjaComponent, canActivate: [AuthGuard] },
+  { path: 'zadaci', component: ZadaciComponent, canActivate: [ProfesorGuard] },
+  { path: 'vezbe', component: VezbeComponent, canActivate: [ProfesorGuard] },
+  { path: 'moje-vezbe', component: MojeVezbeComponent, canActivate: [ProfesorGuard] },
+  { path: 'moji-zadaci', component: MojiZadaciComponent, canActivate: [ProfesorGuard] },
+  { path: 'vezbanja', component: VezbanjaComponent, canActivate: [UcenikGuard] },
+  { path: 'vezbanje/:id', component: VezbanjeComponent, canActivate: [UcenikGuard] },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: "**", component: PageNotFoundComponent}
 ];

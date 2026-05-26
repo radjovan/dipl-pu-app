@@ -1,12 +1,10 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 
-// Declare MathJax as a global variable so that it can be used in this TypeScript file
 declare global {
   interface Window {
-    MathJax: {
-      typesetPromise: () => void;
-      startup: {
-        promise: Promise<any>;
+    MathJax?: {
+      Hub?: {
+        Queue?: (...args: any[]) => void;
       };
     };
   }
@@ -16,64 +14,41 @@ declare global {
   providedIn: 'root'
 })
 export class MathJaxService {
-  
-  // A variable to check if MathJax was successfully loaded
   private mathJaxLoaded: Promise<void>;
-  
-  // Configure which MathJax version we want
-  private mathJax: any = {
-    source: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js',
-  }
 
   constructor() {
-    // TODO isn't this a kind of duplicate for later code?
-    this.mathJaxLoaded = this.loadMathJax()
-      .then(() => {
-        console.log('MathJax loaded');
-      })
-      .catch((err) => {
-        console.log('MathJax failed to load', err);
-        // Fallback strategy in case the load doesn't succeed, e.g. load from local file
-      });
+    this.mathJaxLoaded = this.waitForMathJax();
   }
 
-  // This method is used by the MathJaxDirective to check if MathJax is loaded
   public getMathJaxLoadedPromise(): Promise<void> {
     return this.mathJaxLoaded;
   }
 
-  private async loadMathJax(): Promise<any> {
+  private waitForMathJax(): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log('loading MathJax');
-      
-      const script: HTMLScriptElement = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = this.mathJax.source;
-      script.async = true;
+      const start = Date.now();
 
-      // Once the script is loaded, resolve the promise
-      script.onload = () => {
-        resolve("MathJax loaded")
+      const check = () => {
+        if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Queue) {
+          resolve();
+          return;
+        }
+
+        if (Date.now() - start > 5000) {
+          reject('MathJax did not load in time');
+          return;
+        }
+
+        window.setTimeout(check, 50);
       };
 
-      // If there's an error, reject the promise
-      script.onerror = () => {
-        reject("Error loading MathJax");
-      }
-
-      document.head.appendChild(script); // Append the script to start loading it
+      check();
     });
   }
 
-  render(nativeElement: any) {
-    /*
-    * This method is used to render the math inside an element
-     */
-    window.MathJax.startup.promise.then(() => {
-
-      console.log('Typesetting LaTex');
-
-      window.MathJax.typesetPromise();
-    });
+  render(nativeElement: HTMLElement): void {
+    if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Queue) {
+      window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub, nativeElement]);
+    }
   }
 }

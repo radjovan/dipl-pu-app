@@ -7,10 +7,11 @@ import { UserService } from './services/user-service/user.service';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'pu-api';
+  title = 'Programirano ucenje';
+
   constructor(private userService: UserService) {}
 
   get isLoggedIn(): boolean {
-    return true;//this.userService.isLoggedIn();
+    return this.userService.isLoggedIn();
   }
 }

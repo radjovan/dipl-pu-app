@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user-service/user.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Odeljenje } from '../../models/odeljenje';
-import { CommonModule } from '@angular/common';
 import { Predmet } from '../../models/predmet';
 import { ZaduzenjaService } from '../../services/zaduzenja-service/zaduzenja.service';
 import { UserDTO } from '../../models/DTOs/userDTO';
@@ -111,19 +110,21 @@ export class RegistrationComponent implements OnInit {
   }
 
   onRoleChange(): void {
-    this.registrationForm.get('roleId')?.valueChanges.subscribe(roleId => {
+    this.registrationForm.get('role')?.valueChanges.subscribe(role => {
       const odeljenje = this.registrationForm.get('odeljenje');
       const predmet = this.registrationForm.get('predmet');
-      console.log(this.registrationForm.getRawValue())
-      if (roleId === 3) {
+
+      if (role === 3 || role === '3') {
         odeljenje?.setValidators([Validators.required]);
-       } else if (roleId === '2') {
+        predmet?.clearValidators();
+      } else if (role === 2 || role === '2') {
         predmet?.setValidators([Validators.required]);
         odeljenje?.clearValidators();
       } else {
         odeljenje?.clearValidators();
         predmet?.clearValidators();
       }
+
       odeljenje?.updateValueAndValidity();
       predmet?.updateValueAndValidity();
     });

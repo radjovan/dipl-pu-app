@@ -3,10 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Predmet } from '../../models/predmet';
 import { ZadatakService } from '../../services/zadatak-service/zadatak.service';
-import { tacnostOdgovora } from '../../../enviroment'; // Proveri tačnu putanju za uvoz
-import MathJax from 'better-react-mathjax/MathJax';
+import { tacnostOdgovora } from '../../../environments/environment';
 import { UserService } from '../../services/user-service/user.service';
 import { Zadatak } from '../../models/zadatak';
+import { MathJaxService } from '../../services/math-jax/math-jax.service';
 import { Router } from '@angular/router';
 import { FileService } from '../../services/file-service/file.service';
 
@@ -43,7 +43,8 @@ export class ZadaciComponent implements OnInit , AfterViewInit {
     private sanitizer: DomSanitizer,
     private userService: UserService,
     private router: Router,
-    private fileService: FileService
+    private fileService: FileService,
+    private mathJaxService: MathJaxService
   ) {
     this.taskForm = this.fb.group({
       nivo: [0, Validators.required],
@@ -216,9 +217,11 @@ export class ZadaciComponent implements OnInit , AfterViewInit {
   }
 
   typesetMath() {
-    if (typeof MathJax !== 'undefined' && MathJax && MathJax.Hub && MathJax.Hub.Queue) {
-      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-    }
+    this.mathJaxService.getMathJaxLoadedPromise().then(() => {
+      if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Queue) {
+        window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
+      }
+    });
   }
   
   getFile() {

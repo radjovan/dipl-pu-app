@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Predmet } from '../../models/predmet';
 import { Zadatak } from '../../models/zadatak';
-import { environment } from '../../../enviroment';
+import { environment } from '../../../environments/environment';
 import { UserService } from '../user-service/user.service';
 import { VezbaDTO } from '../../models/DTOs/VezbaDTO';
 import { Slika } from '../../models/slika';

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { MathJaxService } from '../../services/math-jax/math-jax.service';
 
 
@@ -9,21 +9,18 @@ import { MathJaxService } from '../../services/math-jax/math-jax.service';
   templateUrl: './math-jax-paragraph.component.html',
   styleUrl: './math-jax-paragraph.component.css'
 })
-export class MathJaxParagraphComponent {
-  @ViewChild('mathParagraph') paragraphElement: any;
+export class MathJaxParagraphComponent implements AfterViewInit {
+  @ViewChild('mathParagraph', { static: false }) paragraphElement!: ElementRef<HTMLElement>;
   @Input({ required: true }) mathString!: string;
 
   constructor(private mathJaxService: MathJaxService) {}
 
-  ngOnInit() {
+  ngAfterViewInit(): void {
     this.mathJaxService.getMathJaxLoadedPromise().then(() => {
-      console.log('MathJax loaded, rendering math');
-      
-      // Insert the input string
-      this.paragraphElement.nativeElement.innerHTML = this.mathString;
-      
-      // Render the Latex
-      this.mathJaxService.render(this.paragraphElement.nativeElement);
+      if (this.paragraphElement && this.paragraphElement.nativeElement) {
+        this.paragraphElement.nativeElement.innerHTML = this.mathString;
+        this.mathJaxService.render(this.paragraphElement.nativeElement);
+      }
     });
   }
 }
